@@ -1,0 +1,25 @@
+version: '3'
+services:
+  web:
+    build:
+      context: web
+    volumes:
+      - ./web/bin:/var/www
+    ports:
+        - "80:80"
+    depends_on:
+      - maria
+    links:
+      - "maria:maria"
+
+
+  maria:
+    image: mariadb:latest
+    volumes:
+      - ./maria/data_dump:/var/lib/mysql
+      - ./maria/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+      - ./maria/dump-db.sql:/usr/local/dump-db.sql
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=true
+      - MYSQL_USER=maria
+      - MYSQL_PASSWORD=pass
